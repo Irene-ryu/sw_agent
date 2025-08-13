@@ -10,3 +10,7 @@ git init
 
 git remote add origin https://github.com/Irene-ryu/sw_agent
 
+git add .
+git commit -m "Initial commit"
+git branch -M main   # git branch 몇 맞추가 (master to main)
+git push -u origin main
