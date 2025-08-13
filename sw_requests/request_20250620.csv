@@ -1,0 +1,5 @@
+﻿req_date,req_time,department,name,employee_id,software_nm,work_type
+20250620,09:40:30,디자인A,크리스틴,11111,Adobe-All Apps,test
+20250620,09:43:01,데이터플랫폼,존,77777,Figma,신규
+20250620,14:48:43,디자인A,제니,55555,keyshot,복직/재사용
+20250620,15:24:29,데이터플랫폼,크리스틴,11111,한컴독스,신규

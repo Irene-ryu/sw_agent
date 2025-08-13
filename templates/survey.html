@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SW 요청 신청서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .form-container {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input[type="text"]:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .radio-option input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .radio-option.selected {
+            border-color: #4facfe;
+            background-color: #f0f9ff;
+        }
+        
+        .other-input {
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .other-input input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #4facfe;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* 팝업 스타일 */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            min-width: 300px;
+        }
+        
+        .popup h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .popup p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        
+        .popup-btn {
+            padding: 10px 30px;
+            background: #4facfe;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .popup-btn:hover {
+            background: #3a8bfd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SW 요청 신청서</h1>
+            <p>필요한 정보를 입력해주세요</p>
+        </div>
+        
+        <div class="form-container">
+            <form id="surveyForm">
+                <!-- Q1. 부서명 -->
+                <div class="form-group">
+                    <label for="department">Q1. 부서명</label>
+                    <input type="text" id="department" name="department" required>
+                </div>
+                
+                <!-- Q2. 이름 -->
+                <div class="form-group">
+                    <label for="name">Q2. 이름</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <!-- Q3. 사번 -->
+                <div class="form-group">
+                    <label for="employee_id">Q3. 사번</label>
+                    <input type="text" id="employee_id" name="employee_id" required>
+                </div>
+                
+                <!-- Q4. 필요한 SW 명 -->
+                <div class="form-group">
+                    <label>Q4. 필요한 SW 명</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="sw1" name="software" value="Adobe-All Apps">
+                            <label for="sw1">Adobe-All Apps</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw2" name="software" value="Adobe-Acrobat Pro DC">
+                            <label for="sw2">Adobe-Acrobat Pro DC</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw3" name="software" value="Adobe-Express&Firefly">
+                            <label for="sw3">Adobe-Express&Firefly</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw4" name="software" value="Adobe-Substance 3D 컬랙션">
+                            <label for="sw4">Adobe-Substance 3D 컬랙션</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw5" name="software" value="AutoCAD-full">
+                            <label for="sw5">AutoCAD-full</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw6" name="software" value="AutoCAD-lite">
+                            <label for="sw6">AutoCAD-lite</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw7" name="software" value="Enscape">
+                            <label for="sw7">Enscape</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw8" name="software" value="Figma">
+                            <label for="sw8">Figma</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw9" name="software" value="keyshot">
+                            <label for="sw9">keyshot</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw10" name="software" value="MAC용 MS-Office">
+                            <label for="sw10">MAC용 MS-Office</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw11" name="software" value="Midjourney">
+                            <label for="sw11">Midjourney</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw12" name="software" value="Sketchup">
+                            <label for="sw12">Sketchup</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw13" name="software" value="v-ray">
+                            <label for="sw13">v-ray</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw14" name="software" value="라이노">
+                            <label for="sw14">라이노</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw15" name="software" value="산돌구름">
+                            <label for="sw15">산돌구름</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw16" name="software" value="윤디자인">
+                            <label for="sw16">윤디자인</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw17" name="software" value="한컴독스">
+                            <label for="sw17">한컴독스</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="sw_other" name="software" value="기타">
+                            <label for="sw_other">기타</label>
+                        </div>
+                        <div class="other-input" id="sw_other_input">
+                            <input type="text" id="sw_other_text" placeholder="기타 SW명을 입력하세요">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Q5. 요청 작업 -->
+                <div class="form-group">
+                    <label>Q5. 요청 작업</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="work1" name="work_type" value="신규">
+                            <label for="work1">신규</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="work2" name="work_type" value="만료/갱신">
+                            <label for="work2">만료/갱신</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="work3" name="work_type" value="복직/재사용">
+                            <label for="work3">복직/재사용</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="work_other" name="work_type" value="기타">
+                            <label for="work_other">기타</label>
+                        </div>
+                        <div class="other-input" id="work_other_input">
+                            <input type="text" id="work_other_text" placeholder="기타 작업을 입력하세요">
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">저장</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 팝업 -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup">
+            <h2 id="popupTitle">알림</h2>
+            <p id="popupMessage"></p>
+            <button class="popup-btn" onclick="closePopup()">확인</button>
+        </div>
+    </div>
+    
+    <script>
+        // 라디오 버튼 선택 시 스타일 변경
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // 같은 그룹의 모든 옵션에서 selected 클래스 제거
+                document.querySelectorAll(`input[name="${this.name}"]`).forEach(r => {
+                    r.closest('.radio-option').classList.remove('selected');
+                });
+                // 선택된 옵션에 selected 클래스 추가
+                this.closest('.radio-option').classList.add('selected');
+            });
+        });
+        
+        // 기타 선택 시 텍스트 입력 필드 표시
+        document.getElementById('sw_other').addEventListener('change', function() {
+            const otherInput = document.getElementById('sw_other_input');
+            if (this.checked) {
+                otherInput.style.display = 'block';
+                document.getElementById('sw_other_text').required = true;
+            }
+        });
+        
+        document.querySelectorAll('input[name="software"]:not(#sw_other)').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('sw_other_input').style.display = 'none';
+                document.getElementById('sw_other_text').required = false;
+            });
+        });
+        
+        document.getElementById('work_other').addEventListener('change', function() {
+            const otherInput = document.getElementById('work_other_input');
+            if (this.checked) {
+                otherInput.style.display = 'block';
+                document.getElementById('work_other_text').required = true;
+            }
+        });
+        
+        document.querySelectorAll('input[name="work_type"]:not(#work_other)').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('work_other_input').style.display = 'none';
+                document.getElementById('work_other_text').required = false;
+            });
+        });
+        
+        // 폼 제출 처리
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {};
+            
+            // 폼 데이터 수집
+            data.department = formData.get('department');
+            data.name = formData.get('name');
+            data.employee_id = formData.get('employee_id');
+            
+            // SW 선택 처리
+            const selectedSW = formData.get('software');
+            if (selectedSW === '기타') {
+                const otherSW = document.getElementById('sw_other_text').value;
+                data.software = `${otherSW}`;
+            } else {
+                data.software = selectedSW;
+            }
+            
+            // 작업 유형 처리
+            const selectedWork = formData.get('work_type');
+            if (selectedWork === '기타') {
+                const otherWork = document.getElementById('work_other_text').value;
+                data.work_type = `${otherWork}`;
+            } else {
+                data.work_type = selectedWork;
+            }
+            
+            // 서버로 데이터 전송
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                showPopup(result.status === 'success' ? '완료' : '오류', result.message);
+            })
+            .catch(error => {
+                showPopup('오류', '서버 연결에 실패했습니다.');
+            });
+        });
+        
+        function showPopup(title, message) {
+            document.getElementById('popupTitle').textContent = title;
+            document.getElementById('popupMessage').textContent = message;
+            document.getElementById('popupOverlay').style.display = 'block';
+        }
+        
+        function closePopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+            // 팝업 닫으면 창 닫기
+            window.close();
+        }
+    </script>
+</body>
+</html>
